@@ -138,7 +138,17 @@ class ClientSM:
                     self.disconnect()
                     self.state = S_LOGGEDIN
                     self.peer = ''
-                
+                elif my_msg == "gaming":
+                    res = json.loads(myrecv(self.s))["status"]
+                    if res == "success":
+                        self.state = S_GAMING
+                        #init the game
+                    elif res == "number error":
+                        self.out_msg = "The number of players in the group does not support the game"
+                        # number of members error
+                    elif res == "successfully sent":
+                        self.out_msg = "Request sent, waiting for peers' responses."
+                        # sending the msg and wait for responses
             if len(peer_msg) > 0:    # peer's stuff, coming in
   
                 # ----------your code here------#
@@ -157,11 +167,11 @@ class ClientSM:
                     
 
         elif self.state == S_WAITING:
-            if my_msg = 'Yes':
+            if my_msg == 'Yes':
                 mysend(self.s, json.dumps({"action":"accept"}))
                 game_status = json.loads(myrecv(self.s))["results"]
 
-            elif my_msg = 'NO':
+            elif my_msg == 'NO':
                 mysend(self.s, json.dumps({"action":"reject"}))
                 game_status = json.loads(myrecv(self.s))["results"]
                 self.state = S_CHATTING
